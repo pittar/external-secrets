@@ -25,7 +25,7 @@ helm repo add external-secrets https://external-secrets.github.io/kubernetes-ext
 helm install external-secrets external-secrets/kubernetes-external-secrets -f subchart/values.yaml
 ```
 
-See `subchart/values.yaml` for an example values file.
+See [subchart/values.yaml](subchart/values.yaml) for an example values file.
 
 You should be all set!  Time to create some secrets.
 
