@@ -1,104 +1,104 @@
----
-env:
-  INSTANCE_ID: external-secrets
-  AWS_REGION: ca-central-1
-  AWS_DEFAULT_REGION: ca-central-1
-  POLLER_INTERVAL_MILLISECONDS: 60000 # smaller number means more frequent API calls so there is a cost
-  WATCH_TIMEOUT: 60000
-  WATCHED_NAMESPACES: ""  # Comma separated list of namespaces, empty or unset means ALL namespaces.
-  LOG_LEVEL: info
-  LOG_MESSAGE_KEY: "msg"
- 
-  # Print logs level as string ("info") rather than integer (30)
-  # USE_HUMAN_READABLE_LOG_LEVELS: true
-  METRICS_PORT: 3001
-  # Use custom endpoints for FIPS compliance
-  # AWS_STS_ENDPOINT: https://sts-fips.us-east-1.amazonaws.com
-  # AWS_SSM_ENDPOINT: http://ssm-fips.us-east-1.amazonaws.com
-  # AWS_SM_ENDPOINT: http://secretsmanager-fips.us-east-1.amazonaws.com
- 
-# Create environment variables from existing k8s secrets
-envVarsFromSecret:
-  AWS_ACCESS_KEY_ID:
-    secretKeyRef: aws-secret-manager-credentials
-    key: AWS_ACCESS_KEY_ID
-  AWS_SECRET_ACCESS_KEY:
-    secretKeyRef: aws-secret-manager-credentials
-    key: AWS_SECRET_ACCESS_KEY
- 
- 
-# List of sources to populate environment variables in the container.
-# The keys defined within a source must be a C_IDENTIFIER. All invalid keys
-# will be reported as an event when the container is starting. When a key
-# exists in multiple sources, the value associated with the last source will
-# take precedence. Values defined by an Env with a duplicate key will take precedence.
-# https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/#configure-all-key-value-pairs-in-a-configmap-as-container-environment-variables
-envFrom: {}
- 
-rbac:
-  # Specifies whether RBAC resources should be created
-  create: true
- 
-serviceAccount:
-  create: true
-  # Specifies annotations for this service account
-  annotations: {}
-  # The name of the service account to use.
-  # If not set and create is true, a name is generated using the fullname template
-  name: external-secrets-sa
- 
-# Using multiple replicas is not recommended as there is no coordination between replicas.
-# Replicas will try to create and update secrets concurrently which might lead to race conditions.
-replicaCount: 1
- 
-image:
-  repository: ghcr.io/external-secrets/kubernetes-external-secrets
-  tag: 8.3.0
-  pullPolicy: IfNotPresent
- 
-imagePullSecrets: []
- 
-nameOverride: ""
-fullnameOverride: ""
- 
-podAnnotations: {}
-podLabels: {}
- 
-priorityClassName: ""
- 
-dnsConfig: {}
- 
-securityContext:
-  runAsNonRoot: true
- 
-# A security context defines privilege and access control settings for a Pod or Container.
-# ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
-containerSecurityContext: {}
-  # allowPrivilegeEscalation: false
-  # privileged: false
- 
-resources:
-  limits:
-    cpu: 100m
-    memory: 256Mi
-  requests:
-    cpu: 100m
-    memory: 128Mi
- 
-nodeSelector: {}
- 
-tolerations: []
- 
-affinity: {}
- 
-podDisruptionBudget: {}
- 
-serviceMonitor:
-  enabled: false
-  interval: "30s"
-  namespace:
- 
-deploymentInitContainers: {}
- 
-# Add additional RBAC rules to the ClusterRole granted to the service account
-customClusterRoles: {}
+external-secrets:
+  env:
+    INSTANCE_ID: external-secrets
+    AWS_REGION: ca-central-1
+    AWS_DEFAULT_REGION: ca-central-1
+    POLLER_INTERVAL_MILLISECONDS: 60000 # smaller number means more frequent API calls so there is a cost
+    WATCH_TIMEOUT: 60000
+    WATCHED_NAMESPACES: ""  # Comma separated list of namespaces, empty or unset means ALL namespaces.
+    LOG_LEVEL: info
+    LOG_MESSAGE_KEY: "msg"
+
+    # Print logs level as string ("info") rather than integer (30)
+    # USE_HUMAN_READABLE_LOG_LEVELS: true
+    METRICS_PORT: 3001
+    # Use custom endpoints for FIPS compliance
+    # AWS_STS_ENDPOINT: https://sts-fips.us-east-1.amazonaws.com
+    # AWS_SSM_ENDPOINT: http://ssm-fips.us-east-1.amazonaws.com
+    # AWS_SM_ENDPOINT: http://secretsmanager-fips.us-east-1.amazonaws.com
+
+  # Create environment variables from existing k8s secrets
+  envVarsFromSecret:
+    AWS_ACCESS_KEY_ID:
+      secretKeyRef: aws-secret-manager-credentials
+      key: AWS_ACCESS_KEY_ID
+    AWS_SECRET_ACCESS_KEY:
+      secretKeyRef: aws-secret-manager-credentials
+      key: AWS_SECRET_ACCESS_KEY
+
+
+  # List of sources to populate environment variables in the container.
+  # The keys defined within a source must be a C_IDENTIFIER. All invalid keys
+  # will be reported as an event when the container is starting. When a key
+  # exists in multiple sources, the value associated with the last source will
+  # take precedence. Values defined by an Env with a duplicate key will take precedence.
+  # https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/#configure-all-key-value-pairs-in-a-configmap-as-container-environment-variables
+  envFrom: {}
+
+  rbac:
+    # Specifies whether RBAC resources should be created
+    create: true
+
+  serviceAccount:
+    create: true
+    # Specifies annotations for this service account
+    annotations: {}
+    # The name of the service account to use.
+    # If not set and create is true, a name is generated using the fullname template
+    name: external-secrets-sa
+
+  # Using multiple replicas is not recommended as there is no coordination between replicas.
+  # Replicas will try to create and update secrets concurrently which might lead to race conditions.
+  replicaCount: 1
+
+  image:
+    repository: ghcr.io/external-secrets/kubernetes-external-secrets
+    tag: 8.3.0
+    pullPolicy: IfNotPresent
+
+  imagePullSecrets: []
+
+  nameOverride: ""
+  fullnameOverride: ""
+
+  podAnnotations: {}
+  podLabels: {}
+
+  priorityClassName: ""
+
+  dnsConfig: {}
+
+  securityContext:
+    runAsNonRoot: true
+
+  # A security context defines privilege and access control settings for a Pod or Container.
+  # ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+  containerSecurityContext: {}
+    # allowPrivilegeEscalation: false
+    # privileged: false
+
+  resources:
+    limits:
+      cpu: 100m
+      memory: 256Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}
+
+  podDisruptionBudget: {}
+
+  serviceMonitor:
+    enabled: false
+    interval: "30s"
+    namespace:
+
+  deploymentInitContainers: {}
+
+  # Add additional RBAC rules to the ClusterRole granted to the service account
+  customClusterRoles: {}
